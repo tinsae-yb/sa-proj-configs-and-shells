@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: shop-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: shop-virtualservice
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - shop-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /shop
+      route:
+        - destination:
+            host: shop
+            port:
+              number: 3000
