@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delivery-deploy
+  labels:
+    app: delivery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: delivery
+  template:
+    metadata:
+      labels:
+        app: delivery
+    spec:
+      containers:
+        - name: delivery-service
+          image: docker.io/abelaa/delivery-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          env:
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-delivery-deploy
+                  key: mongodb-root-password
+            - name: MONGODB_URI
+              value: "mongodb://root:$(MONGODB_ROOT_PASSWORD)@mongodb-delivery-deploy.default.svc.cluster.local:27017/delivery?authSource=admin"
+            - name: KAFKA_URI
+              value: "kafka-deploy.default.svc.cluster.local:9092"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: delivery
+  labels:
+    app: delivery
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8081
+      protocol: TCP
+  selector:
+    app: delivery
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: delivery-virtualservice
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - gateway
+  http:
+    - match:
+        - uri:
+            prefix: /deliveries
+      route:
+        - destination:
+            host: delivery
+            port:
+              number: 80

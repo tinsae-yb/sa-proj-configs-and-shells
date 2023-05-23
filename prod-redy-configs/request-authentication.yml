@@ -1,0 +1,41 @@
+apiVersion: security.istio.io/v1
+kind: RequestAuthentication
+metadata:
+  name: "jwt-auth"
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingress
+  jwtRules:
+    - issuer: "user.default.svc.cluster.local"
+      jwksUri: "http://jwks.default.svc.cluster.local:8000/jwks"
+      outputClaimToHeaders:
+        - header: "x-user-id"
+          claim: "_id"
+
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: "reviews-policy"
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: ingress
+  action: DENY
+  rules:
+    - from:
+        - source:
+            notRequestPrincipals: ["*"]
+      to:
+        - operation:
+            paths:
+              [
+                "/api/reviews*",
+                "/deliveries*",
+                "/carts*",
+                "/api/restaurants*",
+                "/api/v1/orders*",
+              ]

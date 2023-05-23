@@ -7,19 +7,15 @@ metadata:
     service: shop
 spec:
   ports:
-    - port: 3000
-      name: http
+    - name: http
+      port: 3000
   selector:
     app: shop
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: shop
-  labels:
-    app: shop
 spec:
   replicas: 1
   selector:
@@ -31,8 +27,28 @@ spec:
         app: shop
     spec:
       containers:
-        - name: shop
-          image: docker.io/tinsae/shop-demo:2.0.0
+        - image: docker.io/tinsae/shop-demo:2.0.0
           imagePullPolicy: IfNotPresent
+          name: shop
           ports:
             - containerPort: 3000
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: shop
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - gateway
+  http:
+    - match:
+        - uri:
+            prefix: /shop
+      route:
+        - destination:
+            host: shop
+            port:
+              number: 3000

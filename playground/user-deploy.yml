@@ -17,15 +17,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user
-  labels:
-    app: user
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: user
-  minReadySeconds: 20
-
   template:
     metadata:
       labels:
@@ -37,10 +33,30 @@ spec:
             secretName: jwt-private-key
       containers:
         - name: user
-          image: docker.io/tinsae/user-demo:5.0.0
+          image: docker.io/tinsae/user-demo:6.2.6
           volumeMounts:
             - name: private-key
               mountPath: /etc/jwt
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: user-virtualservice
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api/user
+      route:
+        - destination:
+            host: user
+            port:
+              number: 3000
