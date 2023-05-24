@@ -22,7 +22,7 @@ echo "installing istio-base"
 helm install istio-base istio/base -n istio-system
 
 echo "installing istiod"
-helm install istiod istio/istiod -n istio-system --wait
+helm install istiod istio/istiod -n istio-system 
 
 echo "checking helm status"
 helm status istiod -n istio-system
@@ -48,33 +48,33 @@ echo "db installation"
 echo " installing database for review service - mongodb"
 helm install  review-mongodb-sharded \
   --set auth.rootPassword=password,shards=2,configsvr.replicaCount=2,shardsvr.dataNode.replicaCount=2,service.name=mongodb-review-sharded \
-    oci://registry-1.docker.io/bitnamicharts/mongodb-sharded --wait
+    oci://registry-1.docker.io/bitnamicharts/mongodb-sharded 
 
 
 
 echo " installing database for delivery service - mongodb"
 
-helm install mongodb-delivery-deploy oci://registry-1.docker.io/bitnamicharts/mongodb --wait
+helm install mongodb-delivery-deploy oci://registry-1.docker.io/bitnamicharts/mongodb 
 
 
 echo    " installing database for restaurant service - mongodb"
 
-helm install mongodb-restaurant-deploy oci://registry-1.docker.io/bitnamicharts/mongodb --wait
+helm install mongodb-restaurant-deploy oci://registry-1.docker.io/bitnamicharts/mongodb 
 
 echo " installing database for user service - mongodb"
 
-helm install mongo-user oci://registry-1.docker.io/bitnamicharts/mongodb --wait
+helm install mongo-user oci://registry-1.docker.io/bitnamicharts/mongodb 
 
 
 echo " installing kafka"
 
-helm install kafka-deploy oci://registry-1.docker.io/bitnamicharts/kafka --wait
+helm install kafka-deploy oci://registry-1.docker.io/bitnamicharts/kafka 
 
 echo " installing mysql for order service"
-helm install mysql-order-deploy oci://registry-1.docker.io/bitnamicharts/mysql --wait
+helm install mysql-order-deploy oci://registry-1.docker.io/bitnamicharts/mysql 
 
 echo " installing mysql for shopping card service"
-helm install mysql-shopping-cart-deploy oci://registry-1.docker.io/bitnamicharts/mysql --wait
+helm install mysql-shopping-cart-deploy oci://registry-1.docker.io/bitnamicharts/mysql 
 
 
 
@@ -93,6 +93,9 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.17/samp
 echo "installing kiali"
 kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.17/samples/addons/kiali.yaml
 
+
+echo "virtual service for grafana,  kiali, zipkin"
+kubectl apply -f ./zipkin-grafana-kiali-virtual-service.yml
 
 
 echo "adding public key config"
