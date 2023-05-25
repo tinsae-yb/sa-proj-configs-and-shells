@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: docker.io/geekboii/test:v1
+          image: docker.io/geekboii/test:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
