@@ -29,7 +29,7 @@ spec:
         app: review
     spec:
       containers:
-        - image: docker.io/tinsae/review-app:1.1.4
+        - image: docker.io/tinsae/review-app:2.0.0
           imagePullPolicy: IfNotPresent
           name: review
           ports:
