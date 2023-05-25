@@ -64,3 +64,19 @@ spec:
             host: delivery
             port:
               number: 80
+    - match:
+        - uri:
+            prefix: /swagger-ui
+      route:
+        - destination:
+            host: delivery
+            port:
+              number: 80
+    - match:
+        - uri:
+            prefix: /v3/api-docs
+      route:
+        - destination:
+            host: delivery
+            port:
+              number: 80
