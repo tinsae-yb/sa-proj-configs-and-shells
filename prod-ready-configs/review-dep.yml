@@ -47,7 +47,7 @@ spec:
             - name: LOGSTASH_HOST
               value: logstash-service
             - name: LOGSTASH_PORT
-              value: 1514
+              value: "1514"
             - name: MONGODB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
