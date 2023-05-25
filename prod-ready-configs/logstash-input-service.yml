@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash-service
+spec:
+  selector:
+    app.kubernetes.io/name: logstash
+  ports:
+    - name: input
+      protocol: TCP
+      port: 1514
+      targetPort: 1514
+  type: ClusterIP

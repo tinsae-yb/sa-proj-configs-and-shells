@@ -52,6 +52,8 @@ helm install  review-mongodb-sharded \
 
 
 
+
+
 echo " installing database for delivery service - mongodb"
 
 helm install mongodb-delivery-deploy oci://registry-1.docker.io/bitnamicharts/mongodb 
@@ -76,6 +78,26 @@ helm install mysql-order-deploy oci://registry-1.docker.io/bitnamicharts/mysql
 echo " installing mysql for shopping card service"
 helm install mysql-shopping-cart-deploy oci://registry-1.docker.io/bitnamicharts/mysql 
 
+
+
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+echo "installing logstash"
+helm install logstash -f ./logstash-value.yaml oci://registry-1.docker.io/bitnamicharts/logstash
+
+echo "creating logstash service"
+kubectl apply -f ./logstash-input-service.yml
+
+echo "installing elasticsearch"
+helm install elasticsearch --set global.elasticsearch.service.name=elasticsearch, oci://registry-1.docker.io/bitnamicharts/elasticsearch
+
+echo "installing kibana"
+helm install kibana oci://registry-1.docker.io/bitnamicharts/kibana --set elasticsearch.hosts[0]=elasticsearch --set elasticsearch.port=9200
+
+
+echo "installing redis"
+helm install redis oci://registry-1.docker.io/bitnamicharts/redis
 
 
 

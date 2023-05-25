@@ -29,12 +29,25 @@ spec:
         app: review
     spec:
       containers:
-        - image: docker.io/tinsae/review-app:1.1.3
+        - image: docker.io/tinsae/review-app:1.1.4
           imagePullPolicy: IfNotPresent
           name: review
           ports:
             - containerPort: 3000
           env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+            - name: REDIS_HOST
+              value: redis-master.default.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
+            - name: LOGSTASH_HOST
+              value: logstash-service
+            - name: LOGSTASH_PORT
+              value: 1514
             - name: MONGODB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:

@@ -18,7 +18,7 @@ spec:
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: "reviews-policy"
+  name: "auth-policy"
   namespace: istio-system
 spec:
   selector:
@@ -31,11 +31,13 @@ spec:
             notRequestPrincipals: ["*"]
       to:
         - operation:
-            paths:
-              [
+            paths: [
                 "/api/reviews*",
                 "/deliveries*",
                 "/carts*",
                 "/api/restaurants*",
                 "/api/v1/orders*",
+                "/api/users*",
+                # "|^\/api\/users(?!\/(login|signup)).*$|",
               ]
+            notPaths: ["/api/users/login", "/api/users/signup"]
