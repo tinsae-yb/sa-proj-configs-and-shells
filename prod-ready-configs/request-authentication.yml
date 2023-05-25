@@ -40,4 +40,9 @@ spec:
                 "/api/users*",
                 # "|^\/api\/users(?!\/(login|signup)).*$|",
               ]
-            notPaths: ["/api/users/login", "/api/users/signup"]
+            notPaths:
+              [
+                "/api/users/login",
+                "/api/users/signup",
+                "/api/users/healthCheck",
+              ]

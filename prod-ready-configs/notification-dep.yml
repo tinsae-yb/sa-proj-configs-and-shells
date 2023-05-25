@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: notification-service
-          image: docker.io/abelaa/notification-service:latest
+          image: docker.io/abelaa/notification-service:1.1
           imagePullPolicy: Always
           env:
             - name: KAFKA_URI
